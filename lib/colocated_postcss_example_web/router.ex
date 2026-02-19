@@ -17,7 +17,7 @@ defmodule ColocatedPostcssExampleWeb.Router do
   scope "/", ColocatedPostcssExampleWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", DemoLive, :index
   end
 
   # Other scopes may use custom stacks.

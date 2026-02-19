@@ -11,8 +11,10 @@ defmodule ColocatedPostcssExample.Application do
       ColocatedPostcssExampleWeb.Telemetry,
       ColocatedPostcssExample.Repo,
       {Ecto.Migrator,
-       repos: Application.fetch_env!(:colocated_postcss_example, :ecto_repos), skip: skip_migrations?()},
-      {DNSCluster, query: Application.get_env(:colocated_postcss_example, :dns_cluster_query) || :ignore},
+       repos: Application.fetch_env!(:colocated_postcss_example, :ecto_repos),
+       skip: skip_migrations?()},
+      {DNSCluster,
+       query: Application.get_env(:colocated_postcss_example, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: ColocatedPostcssExample.PubSub},
       # Start a worker by calling: ColocatedPostcssExample.Worker.start_link(arg)
       # {ColocatedPostcssExample.Worker, arg},

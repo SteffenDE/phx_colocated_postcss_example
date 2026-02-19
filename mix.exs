@@ -46,11 +46,10 @@ defmodule ColocatedPostcssExample.MixProject do
       {:ecto_sqlite3, ">= 0.0.0"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 1.1.0"},
+      {:phoenix_live_view, github: "phoenixframework/phoenix_live_view", branch: "sd-colocated", override: true},
       {:lazy_html, ">= 0.1.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.10", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.3", runtime: Mix.env() == :dev},
       {:heroicons,
        github: "tailwindlabs/heroicons",
        tag: "v2.2.0",
@@ -81,14 +80,21 @@ defmodule ColocatedPostcssExample.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
-      "assets.build": ["compile", "tailwind colocated_postcss_example", "esbuild colocated_postcss_example"],
+      "assets.setup": ["esbuild.install --if-missing"],
+      "assets.build": ["compile", &postcss/1, "esbuild colocated_postcss_example"],
       "assets.deploy": [
-        "tailwind colocated_postcss_example --minify",
         "esbuild colocated_postcss_example --minify",
         "phx.digest"
       ],
       precommit: ["compile --warnings-as-errors", "deps.unlock --unused", "format", "test"]
     ]
+  end
+
+  defp postcss(_) do
+    System.shell(
+      "node node_modules/.bin/postcss --config postcss.config.cjs css/app.css --output ../priv/static/assets/css/app.css",
+      cd: "assets",
+      env: [{"NODE_PATH", Mix.Project.build_path()}]
+    )
   end
 end

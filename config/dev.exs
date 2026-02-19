@@ -24,7 +24,17 @@ config :colocated_postcss_example, ColocatedPostcssExampleWeb.Endpoint,
   watchers: [
     esbuild:
       {Esbuild, :install_and_run, [:colocated_postcss_example, ~w(--sourcemap=inline --watch)]},
-    tailwind: {Tailwind, :install_and_run, [:colocated_postcss_example, ~w(--watch)]}
+    node: [
+      "node_modules/.bin/postcss",
+      "--watch",
+      "--config",
+      "postcss.config.js",
+      "css/app.css",
+      "--output",
+      "../priv/static/assets/css/app.css",
+      env: %{"NODE_PATH" => Mix.Project.build_path()},
+      cd: Path.expand("../assets", __DIR__)
+    ]
   ]
 
 # ## SSL Support
